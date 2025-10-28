@@ -1,0 +1,8 @@
+.env
+creds.env
+node_modules/
+/test-results/
+/tests-examples/
+/playwright-report/
+/playwright/.cache/
+.DS_Store
