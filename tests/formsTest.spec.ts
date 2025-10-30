@@ -21,6 +21,8 @@ test.use({
   },
 });
 
+test.skip(!!process.env.CI, 'Skip on CI environment, github Actions');
+
 test('EnrollmentApplications loads', async ({ page }) => {
   await page.goto('https://sistools.sps.org/EnrollmentApplications', { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(1000); // Small delay for page to load
