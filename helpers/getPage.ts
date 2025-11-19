@@ -1,4 +1,3 @@
-// helpers/selectStudent.ts
 import { Page } from '@playwright/test';
 
 /**

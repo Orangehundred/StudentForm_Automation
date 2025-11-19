@@ -6,13 +6,14 @@ if (!process.env.USERNAME || !process.env.PASSWORD) {
 }
 
 console.log('dotenv parsed:', {
-  USERNAME: process.env.USERNAME,
-  PASSWORD: process.env.PASSWORD
+  //USERNAME: process.env.USERNAME,
+  //PASSWORD: process.env.PASSWORD
 });
 
 import { test, expect } from '@playwright/test';
 import { selectStudent } from '../helpers/selectStudent';
 import { getPage } from '../helpers/getPage';
+import { retryGoto } from '../helpers/retryGoto';
 
 test.use({
   httpCredentials: {
@@ -24,7 +25,8 @@ test.use({
 test.skip(!!process.env.CI, 'Skip on CI environment, github Actions');
 
 test('EnrollmentApplications loads', async ({ page }) => {
-  await page.goto('https://sistools.sps.org/EnrollmentApplications', { waitUntil: 'domcontentloaded' });
+  await retryGoto(page, 'https://sistools.sps.org/EnrollmentApplications');
+  
   await page.waitForTimeout(1000); // Small delay for page to load
   console.log('Geocoding page loaded!');
 
@@ -106,33 +108,28 @@ test('EnrollmentApplications loads', async ({ page }) => {
   console.log('Searching for MOCAP 2025-26 Application...');
 
   let foundStudent = false;
-  let updatedStudents = 0;
 
-  [foundStudent, studentCount] = await selectStudent(page, foundStudent, studentCount); //Returns foundStudent's boolean value and amount of successfully updated MOCAP students
-
-
-  if (foundStudent) {
-    updatedStudents++;
-    console.log(updatedStudents + ' students have been updated so far.');
-  }
-
-  activePage = await getPage(page, activePage);
-  console.log('Current Page: ' + activePage)
-  while (!foundStudent && (activePage != 1)) {
-    console.log('❌ No MOCAP 2025-26 Application student found on this page.');
-    await page.waitForTimeout(200);
-
-    await page.getByRole('link', { name: 'Previous' }).click();
+  while (activePage != 1) {
     activePage = await getPage(page, activePage);
-    console.log('Went back a page. Currently page: ' + activePage);
+    console.log('Current Page: ' + activePage);
 
     [foundStudent, studentCount] = await selectStudent(page, foundStudent, studentCount); //Returns foundStudent's boolean value on the previous page
-    if (foundStudent && (activePage != 1)) {
-      console.log('Found MOCAP students, not last page, checking for others...');
-      await page.getByRole('link', { name: 'Previous' }).click();
-      console.log('Went back a page. Currently page: ' + activePage);
-      [foundStudent, studentCount] = await selectStudent(page, foundStudent, studentCount); //Returns foundStudent's boolean value on the previous page
+    if (!foundStudent && (activePage != 1)) {
+      console.log('❌ No MOCAP 2025-26 Application student found on this page');
+      await page.waitForTimeout(200);
 
+      await page.getByRole('link', { name: 'Previous' }).click();
+      activePage = await getPage(page, activePage);
+      console.log('Went back a page. Currently page: ' + activePage);
+
+    } else if (foundStudent && (activePage != 1)) {
+      console.log('Found MOCAP students, not last page, checking for others...');
+      //console.log(studentCount + ' students have been updated so far.'); // FOR DEBUG
+      await page.getByRole('link', { name: 'Previous' }).click();
+
+      activePage = await getPage(page, activePage);
+      console.log('Went back a page. Currently page: ' + activePage);
+      
     } else if (foundStudent && (activePage == 1)) {
       console.log('Breaking, foundStudent is true and on last page');
       break;

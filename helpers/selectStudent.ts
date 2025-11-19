@@ -1,4 +1,3 @@
-// helpers/selectStudent.ts
 import { Page } from '@playwright/test';
 
 /**
@@ -43,7 +42,7 @@ export async function selectStudent(page: Page, foundStudent: boolean, studentCo
 
           console.log(`✅ Successfully found and opened the MOCAP student page: ${studentName?.trim()}`);
           await page1.locator('#ctl00_ContentPlaceHolder1_BuildingInfoUC_drpPreferredBuilding').selectOption('8000');
-          //await page1.locator('#ctl00_ContentPlaceHolder1_BuildingInfoUC_btnSaveBuildingInformation').click();
+          await page1.locator('#ctl00_ContentPlaceHolder1_BuildingInfoUC_btnSaveBuildingInformation').click();
           foundStudent = true;
           studentCount++; //Add 1 student
           console.log('Saved information!');
@@ -68,7 +67,7 @@ export async function selectStudent(page: Page, foundStudent: boolean, studentCo
 
           console.log(`✅ Successfully found and opened the MOCAP student page: ${studentName?.trim()}`);
           await page2.locator('#ctl00_ContentPlaceHolder1_BuildingInfoUC_drpPreferredBuilding').selectOption('8000');
-          //await page2.locator('#ctl00_ContentPlaceHolder1_BuildingInfoUC_btnSaveBuildingInformation').click();
+          await page2.locator('#ctl00_ContentPlaceHolder1_BuildingInfoUC_btnSaveBuildingInformation').click();
           foundStudent = true;
           studentCount++; //Add 1 student
           console.log('Saved information!');
@@ -81,11 +80,11 @@ export async function selectStudent(page: Page, foundStudent: boolean, studentCo
       }
     }
   }
-    if (foundStudent) {
-      console.log('Found MOCAP students on this page.');
-    }  else {
-      console.log('Did not find MOCAP students on this page.');
-    }
+  if (foundStudent) {
+    console.log('Found MOCAP students on this page.');
+  }  else {
+    console.log('Did not find MOCAP students on this page.');
+  }
 
-    return [foundStudent, studentCount]; // Returns false if a student was never found on this page, true if there was. Second value returns number of students found so far.
+  return [foundStudent, studentCount]; // Returns false if a student was never found on this page, true if there was. Second value returns number of students found so far.
 }
