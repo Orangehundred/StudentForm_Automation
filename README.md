@@ -1,19 +1,22 @@
-# Playwright test automation
+# MOCAP Building Assignment Automation
 
-Playwright script written to speed up looking for a specific type of student in a database and editing their 'Building' to be MOCAP.
+### Playwright automation script that queries a student database, filters by enrollment criteria, and bulk-updates Building assignments to MOCAP — replacing a manual process done record by record.
 
 
 ## Quick Start Guide
 Run these commands for the required packages in an integrated cmd
 
-1. Run these
-npm install -D @playwright/test
-npm install -D @types/dotenv
-npm install dotenv
+1. Install dependencies:
+   npm install -D @playwright/test @playwright/test @types/dotenv dotenv
 
-2. Then ensure 'npm ls dotenv @types/dotenv' lists the 2 installed packages 
+2. Verify dotenv packages installed:
+   npm ls dotenv @types/dotenv
 
-3. Run npx playwright test formsTest.spec.ts --project=firefox --headed
+3. Run the script:
+   npx playwright test formsTest.spec.ts --project=firefox --headed
+
+## Environment Variables
+Edit `creds.env` and fill in your credentials before running.
 
 
 ## - Demo Showcase Video -
